@@ -7,8 +7,8 @@ func manifestRender(m manifestValues) string {
 		"{namespace}", m.namespace,
 		"{serviceName}", m.serviceName,
 		"{deploymentName}", m.deploymentName,
-		"{deploymentLableKey}", m.deploymentLableKey,
-		"{deploymentLableValue}", m.deploymentLableValue,
+		"{deploymentLabelKey}", m.deploymentLabelKey,
+		"{deploymentLabelValue}", m.deploymentLabelValue,
 		"{ingressName}", m.ingressName,
 		"{ingressHost}", m.ingressHost,
 		"{ingressClass}", m.ingressClass,
@@ -22,8 +22,8 @@ type manifestValues struct {
 	serviceName string
 
 	deploymentName       string
-	deploymentLableKey   string
-	deploymentLableValue string
+	deploymentLabelKey   string
+	deploymentLabelValue string
 
 	ingressName  string
 	ingressHost  string
@@ -74,25 +74,25 @@ spec:
     port: 3000
     targetPort: http
   selector:
-	{deploymentLableKey}: {deploymentLableValue}
+	{deploymentLabelKey}: {deploymentLabelValue}
 
 ---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   labels:
-	{deploymentLableKey}: {deploymentLableValue}
+	{deploymentLabelKey}: {deploymentLabelValue}
   name: {deploymentName}
   namespace: {namespace}
 spec:
   replicas: 1
   selector:
     matchLabels:
-	  {deploymentLableKey}: {deploymentLableValue}
+	  {deploymentLabelKey}: {deploymentLabelValue}
   template:
     metadata:
       labels:
-		{deploymentLableKey}: {deploymentLableValue}
+		{deploymentLabelKey}: {deploymentLabelValue}
     spec:
       containers:
       - image: grafana/grafana:5.1.0
