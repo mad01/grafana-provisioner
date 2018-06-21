@@ -12,6 +12,8 @@ func manifestRender(m manifestValues) string {
 		"{ingressName}", m.ingressName,
 		"{ingressHost}", m.ingressHost,
 		"{ingressClass}", m.ingressClass,
+		"{databaseURL}", m.databaseURL,
+		"{image}", m.image,
 	)
 	str := replacer.Replace(manifestTemplate)
 	return str
@@ -28,6 +30,10 @@ type manifestValues struct {
 	ingressName  string
 	ingressHost  string
 	ingressClass string
+
+	databaseURL string
+
+	image string
 }
 
 var manifestTemplate = `
@@ -95,8 +101,11 @@ spec:
 		{deploymentLabelKey}: {deploymentLabelValue}
     spec:
       containers:
-      - image: grafana/grafana:5.1.0
+      - image: {image} # grafana/grafana:5.1.0
         name: grafana
+		env:
+		- name: GF_DATABASE_URL 
+		  value: {databaseURL} 
         ports:
         - containerPort: 3000
           name: http
