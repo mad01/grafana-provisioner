@@ -2,6 +2,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/docker/go-connections"
+  packages = ["."]
+  revision = "3ede32e2033de7505e6500d6c868c2b9ed9f169d"
+
+[[projects]]
+  branch = "master"
   name = "github.com/opencontainers/image-spec"
   packages = ["."]
   revision = "372ad780f63454fbbbbcc7cf80e5b90245c13e13"
