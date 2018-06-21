@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -33,22 +32,22 @@ type DB struct {
 	conn *sql.DB
 }
 
-func (d *DB) connect() {
+func (d *DB) connect() error {
 	db, err := sql.Open("mysql", d.URL)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return err
 	}
 	d.conn = db
+	fmt.Printf("connected to database: %v\n", d.URL)
+	return nil
 }
 
 func (d *DB) createDB(name string) error {
 	query := "CREATE DATABASE IF NOT EXISTS name = $1;"
-	rows, err := d.conn.Query(
+	_, err := d.conn.Query(
 		query,
 		name,
 	)
-	defer rows.Close()
 	return err
 }
 

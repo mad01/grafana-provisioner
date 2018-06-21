@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"os"
+
 	"github.com/mad01/grafana-provisioner/pkg/kubectl"
 	"github.com/spf13/cobra"
 )
@@ -29,15 +31,16 @@ func cmdProvision() *cobra.Command {
 			db := DB{
 				URL: dbURL,
 			}
-			db.connect()
+			err := db.connect()
+			errCheck(err)
 			defer db.conn.Close()
 
-			err := db.createDB(team)
+			err = db.createDB(team)
 			errCheck(err)
 
 			name := fmt.Sprintf("grafana-%s", team)
 			values := manifestValues{
-				databaseURL: fmt.Sprintf("%s%s", dbURL, team),
+				databaseURL: fmt.Sprintf("mysql://%s%s", dbURL, team),
 
 				ingressClass: "nginx",
 				ingressHost:  fmt.Sprintf("%s.example.com", team),
@@ -82,5 +85,7 @@ func runCmd() error {
 func errCheck(err error) {
 	if err != nil {
 		fmt.Println(err.Error())
+		fmt.Println("failed will exit")
+		os.Exit(1)
 	}
 }
