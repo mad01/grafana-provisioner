@@ -30,7 +30,10 @@ func cmdProvision() *cobra.Command {
 				URL: dbURL,
 			}
 			db.connect()
-			db.createDB(team)
+			defer db.conn.Close()
+
+			err := db.createDB(team)
+			errCheck(err)
 
 			name := fmt.Sprintf("grafana-%s", team)
 			values := manifestValues{
@@ -52,8 +55,8 @@ func cmdProvision() *cobra.Command {
 			manifest := manifestRender(values)
 
 			kubectl := kubectl.NewKubectlClient(kubeconfig)
-			kubectl.Apply(manifest)
-
+			err = kubectl.Apply(manifest)
+			errCheck(err)
 		},
 	}
 
@@ -74,4 +77,10 @@ func runCmd() error {
 		return fmt.Errorf("%v", err.Error())
 	}
 	return nil
+}
+
+func errCheck(err error) {
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 }
