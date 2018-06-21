@@ -1,10 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
+	"os"
+
+	_ "github.com/go-sql-driver/mysql"
+)
 
 var configData = `
-dnsBase: example.com
-databaseURL: username:password@example.com/dashboards
+databaseURL: root:qwerty@localhost/
 `
 
 var grafanasData = `
@@ -23,14 +28,33 @@ type DatabaseConfig struct {
 	databaseURL string `yaml:"databaseURL"`
 }
 
-type DB struct{}
+type DB struct {
+	URL  string
+	conn *sql.DB
+}
 
-func (d *DB) connect()  {}
-func (d *DB) createDB() {}
-func (d *DB) removeDB() {}
-func (d *DB) listDB()   {}
+func (d *DB) connect() {
+	db, err := sql.Open("mysql", d.URL)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	d.conn = db
+}
+
+func (d *DB) createDB(name string) error {
+	query := "CREATE DATABASE IF NOT EXISTS name = $1;"
+	rows, err := d.conn.Query(
+		query,
+		name,
+	)
+
+	rows.Close()
+	return err
+}
 
 func main() {
+
 	err := runCmd()
 	if err != nil {
 		fmt.Println(err.Error())
