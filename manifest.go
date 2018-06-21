@@ -103,9 +103,9 @@ spec:
       containers:
       - image: {image} # grafana/grafana:5.1.0
         name: grafana
-		env:
-		- name: GF_DATABASE_URL 
-		  value: {databaseURL} 
+        env:
+        - name: GF_DATABASE_URL
+          value: {databaseURL} 
         ports:
         - containerPort: 3000
           name: http
