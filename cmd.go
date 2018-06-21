@@ -37,7 +37,7 @@ func cmdProvision() *cobra.Command {
 
 			name := fmt.Sprintf("grafana-%s", team)
 			values := manifestValues{
-				databaseURL: fmt.Sprintf("%s/%s", dbURL, team),
+				databaseURL: fmt.Sprintf("%s%s", dbURL, team),
 
 				ingressClass: "nginx",
 				ingressHost:  fmt.Sprintf("%s.example.com", team),
