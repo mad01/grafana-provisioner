@@ -48,13 +48,11 @@ func (d *DB) createDB(name string) error {
 		query,
 		name,
 	)
-
-	rows.Close()
+	defer rows.Close()
 	return err
 }
 
 func main() {
-
 	err := runCmd()
 	if err != nil {
 		fmt.Println(err.Error())
