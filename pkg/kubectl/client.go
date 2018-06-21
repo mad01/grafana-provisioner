@@ -7,6 +7,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/mad01/grafana-provisioner/internal/tempfile"
 	"github.com/mad01/grafana-provisioner/pkg/kutil"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/tools/clientcmd"
@@ -35,12 +36,26 @@ type KubectlClient struct {
 	ClientConfig clientcmd.ClientConfig
 }
 
-func (e *KubectlClient) Apply(path string) error {
+func (e *KubectlClient) Apply(manifest string) error {
 	f := cmdutil.NewFactory(e.ClientConfig)
+
+	tmpFile, err := tempfile.TempFile("", "gp", "manifest")
+	if err != nil {
+		return err
+	}
+	defer tmpFile.Close()
+	defer func() {
+		if err := os.Remove(tmpFile.Name()); err != nil {
+			fmt.Println(err.Error())
+		}
+	}()
+
+	tmpFile.WriteString(manifest)
+	fmt.Println(manifest) // todo: remove me
 
 	options := &cmd.ApplyOptions{
 		FilenameOptions: resource.FilenameOptions{
-			Filenames: []string{path},
+			Filenames: []string{tmpFile.Name()},
 		},
 		Cascade: true,
 	}
@@ -50,13 +65,14 @@ func (e *KubectlClient) Apply(path string) error {
 	}
 	cobraCmd.Flags().Bool("validate", true, "")
 	cobraCmd.Flags().Bool("openapi-validation", true, "")
+	cobraCmd.Flags().Bool("openapi-patch", false, "")
 	cobraCmd.Flags().Bool("dry-run", false, "")
 	cobraCmd.Flags().Bool("overwrite", true, "")
 	cobraCmd.Flags().Bool("record", false, "")
 	cobraCmd.Flags().String("schema-cache-dir", "", "")
 	cobraCmd.Flags().String("output", "", "")
 
-	err := cmd.RunApply(
+	err = cmd.RunApply(
 		f,
 		cobraCmd,
 		os.Stdout,
