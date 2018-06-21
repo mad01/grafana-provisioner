@@ -32,20 +32,22 @@ func cmdProvision() *cobra.Command {
 			db.connect()
 			db.createDB(team)
 
-			values := manifestValues{}
-			values.databaseURL = fmt.Sprintf("%s/%s", dbURL, team)
+			name := fmt.Sprintf("grafana-%s", team)
+			values := manifestValues{
+				databaseURL: fmt.Sprintf("%s/%s", dbURL, team),
 
-			values.ingressClass = "nginx"
-			values.ingressHost = fmt.Sprintf("%s.example.com")
-			values.ingressName = fmt.Sprintf("grafana-%s", team)
+				ingressClass: "nginx",
+				ingressHost:  fmt.Sprintf("%s.example.com", team),
+				ingressName:  name,
 
-			values.serviceName = fmt.Sprintf("grafana-%s", team)
-			values.namespace = team
-			values.image = "grafana/grafana:5.1.0"
+				serviceName: name,
+				namespace:   team,
+				image:       "grafana/grafana:5.1.0",
 
-			values.deploymentName = fmt.Sprintf("grafana-%s", team)
-			values.deploymentLabelKey = "app"
-			values.deploymentLabelValue = fmt.Sprintf("grafana-%s", team)
+				deploymentName:       name,
+				deploymentLabelKey:   "app",
+				deploymentLabelValue: name,
+			}
 
 			manifest := manifestRender(values)
 
