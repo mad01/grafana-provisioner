@@ -80,32 +80,32 @@ spec:
     port: 3000
     targetPort: http
   selector:
-	{deploymentLabelKey}: {deploymentLabelValue}
+    {deploymentLabelKey}: {deploymentLabelValue}
 
 ---
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   labels:
-	{deploymentLabelKey}: {deploymentLabelValue}
+    {deploymentLabelKey}: {deploymentLabelValue}
   name: {deploymentName}
   namespace: {namespace}
 spec:
   replicas: 1
   selector:
     matchLabels:
-	  {deploymentLabelKey}: {deploymentLabelValue}
+      {deploymentLabelKey}: {deploymentLabelValue}
   template:
     metadata:
       labels:
-		{deploymentLabelKey}: {deploymentLabelValue}
+        {deploymentLabelKey}: {deploymentLabelValue}
     spec:
       containers:
       - image: {image} # grafana/grafana:5.1.0
         name: grafana
         env:
         - name: GF_DATABASE_URL
-          value: {databaseURL} 
+          value: "{databaseURL}"
         ports:
         - containerPort: 3000
           name: http
