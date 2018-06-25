@@ -18,7 +18,7 @@ func (d *DB) connect() error {
 		return err
 	}
 	d.conn = db
-	fmt.Printf("connected to database: %v\n", d.URL)
+	fmt.Printf("connected to database: %v\n", d.URL) // todo: doint print full connnect string with pw/user
 	return nil
 }
 
