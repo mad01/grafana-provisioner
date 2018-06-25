@@ -36,12 +36,6 @@ container-build:
 container-push:
 	@docker push $(CONTAINER):$(VERSION)
 
-deploy: deploy-generate-from-template
-	@kubectl apply -f deployment.yaml
-
-deploy-generate-from-template:
-	@sed -e "s/{{VERSION}}/${VERSION}/g;" template/deployment.yaml > deployment.yaml
-
 dep-ensure:
 	@dep ensure -v -vendor-only
 
