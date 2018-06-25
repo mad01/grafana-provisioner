@@ -1,6 +1,13 @@
 package main
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
+
+func manifestsAppend(old, new string) string {
+	return fmt.Sprintf("%s\n%s", old, new)
+}
 
 func manifestRender(m manifestValues) string {
 	var replacer = strings.NewReplacer(
