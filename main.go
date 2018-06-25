@@ -43,11 +43,7 @@ func (d *DB) connect() error {
 }
 
 func (d *DB) createDB(name string) error {
-	query := "CREATE DATABASE IF NOT EXISTS name = $1;"
-	_, err := d.conn.Query(
-		query,
-		name,
-	)
+	_, err := d.conn.Exec("CREATE DATABASE IF NOT EXISTS " + name)
 	return err
 }
 
