@@ -84,7 +84,7 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 3000
+    port: 80
     targetPort: http
   selector:
     {deploymentLabelKey}: {deploymentLabelValue}
