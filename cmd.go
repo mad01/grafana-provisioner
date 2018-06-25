@@ -22,25 +22,35 @@ func cmdVersion() *cobra.Command {
 }
 
 func cmdProvision() *cobra.Command {
-	var kubeconfig, dbURL, team string
+	var kubeconfig, dbDNS, dbPass, dbUser, team, image string
+	var dbPort int
 	var command = &cobra.Command{
 		Use:   "provision",
 		Short: "provision grafana and db",
 		Long:  "",
 		Run: func(cmd *cobra.Command, args []string) {
+
+			dbConnStr := func(dns, pass, user string, port int) string {
+				return fmt.Sprintf("%s:%s@tcp(%s:%d)/", user, pass, dns, port)
+			}
+
+			dbGrafanaStr := func(dns, pass, user, db string, port int) string {
+				return fmt.Sprintf("mysql://%s:%s@%s:%d/%s", user, pass, dns, port, db)
+			}
+
 			db := DB{
-				URL: dbURL,
+				URL: dbConnStr(dbDNS, dbPass, dbUser, dbPort),
 			}
 			err := db.connect()
-			errCheck(err)
 			defer db.conn.Close()
+			errCheck(err)
 
 			err = db.createDB(team)
 			errCheck(err)
 
 			name := fmt.Sprintf("grafana-%s", team)
 			values := manifestValues{
-				databaseURL: fmt.Sprintf("mysql://%s%s", dbURL, team),
+				databaseURL: dbGrafanaStr(dbDNS, dbPass, dbUser, team, dbPort),
 
 				ingressClass: "nginx",
 				ingressHost:  fmt.Sprintf("%s.example.com", team),
