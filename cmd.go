@@ -58,7 +58,7 @@ func cmdProvision() *cobra.Command {
 
 				serviceName: name,
 				namespace:   team,
-				image:       "grafana/grafana:5.1.0",
+				image:       image,
 
 				deploymentName:       name,
 				deploymentLabelKey:   "app",
@@ -74,8 +74,12 @@ func cmdProvision() *cobra.Command {
 	}
 
 	command.Flags().StringVarP(&kubeconfig, "kube.config", "k", "", "outside cluster path to kube config")
-	command.Flags().StringVarP(&dbURL, "db.url", "u", "", "mysql database url")
-	command.Flags().StringVarP(&team, "team", "t", "foo", "teamname")
+	command.Flags().StringVarP(&dbDNS, "db.dns", "d", "localhost", "mysql database dns")
+	command.Flags().IntVarP(&dbPort, "db.port", "P", 3306, "mysql database port")
+	command.Flags().StringVarP(&dbPass, "db.pass", "p", "", "mysql database password")
+	command.Flags().StringVarP(&dbUser, "db.user", "u", "", "mysql database username")
+	command.Flags().StringVarP(&team, "team", "t", "foo", "team name")
+	command.Flags().StringVarP(&image, "image", "i", "grafana/grafana:5.1.0", "grafana official container image")
 
 	return command
 }
