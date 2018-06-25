@@ -7,10 +7,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var configData = `
-databaseURL: root:qwerty@localhost/
-`
-
 var grafanasData = `
 teams:
   - foo
