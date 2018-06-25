@@ -103,7 +103,7 @@ func cmdProvision() *cobra.Command {
 	command.Flags().IntVarP(&dbPort, "db.port", "P", 3306, "mysql database port")
 	command.Flags().StringVarP(&dbPass, "db.pass", "p", "", "mysql database password")
 	command.Flags().StringVarP(&dbUser, "db.user", "u", "", "mysql database username")
-	command.Flags().StringVarP(&team, "team", "t", "", "team name")
+	command.Flags().StringVarP(&team, "team", "t", "", "team name, if passed config file will be skipped ")
 	command.Flags().StringVarP(&image, "image", "i", "grafana/grafana:5.1.0", "grafana official container image")
 	command.Flags().StringVarP(&ingressDNSPrefix, "ingress.prefix", "I", "grafana.example.com", "dna prefix template %s.prefix")
 
