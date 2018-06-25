@@ -22,7 +22,7 @@ func cmdVersion() *cobra.Command {
 }
 
 func cmdProvision() *cobra.Command {
-	var kubeconfig, dbDNS, dbPass, dbUser, team, image, ingressDNSPrefix string
+	var kubeconfig, dbDNS, dbPass, dbUser, team, image, ingressDNSPrefix, configPath string
 	var dbPort int
 	var dryRun bool
 	var command = &cobra.Command{
@@ -51,7 +51,7 @@ func cmdProvision() *cobra.Command {
 				fmt.Println("adding teams from flags")
 				config.Teams = append(config.Teams, team)
 			} else {
-				config = GetConfig("config.yaml")
+				config = GetConfig(configPath)
 				fmt.Println("adding teams from config")
 			}
 
@@ -107,6 +107,7 @@ func cmdProvision() *cobra.Command {
 	command.Flags().StringVarP(&image, "image", "i", "grafana/grafana:5.1.0", "grafana official container image")
 	command.Flags().StringVarP(&ingressDNSPrefix, "ingress.prefix", "I", "grafana.example.com", "dna prefix template %s.prefix")
 
+	command.Flags().StringVarP(&configPath, "config", "c", "config.yaml", "path to config")
 	command.Flags().BoolVarP(&dryRun, "dry-run", "D", false, "only output data")
 
 	return command
