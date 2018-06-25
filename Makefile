@@ -57,6 +57,6 @@ format-verify:
 
 lines-diff:
 	@echo "----- business logic lindes of code -----"
-	@git ls |grep -v test.go|xargs cat |wc -l
+	@git ls |grep .go |grep -v test.go|xargs cat |wc -l
 	@echo "----- test lines of code -----"
-	@git ls |grep -e test.go|xargs cat |wc -l
+	@git ls |grep .go |grep -e test.go|xargs cat |wc -l
