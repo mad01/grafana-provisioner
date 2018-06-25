@@ -1,4 +1,4 @@
-FROM golang:1.10.1
+FROM golang:1.10.3
 WORKDIR /go/src/github.com/mad01/grafana-provisioner
 
 RUN go get github.com/golang/dep/cmd/dep
