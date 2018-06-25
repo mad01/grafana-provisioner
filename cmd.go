@@ -22,7 +22,7 @@ func cmdVersion() *cobra.Command {
 }
 
 func cmdProvision() *cobra.Command {
-	var kubeconfig, dbDNS, dbPass, dbUser, team, image string
+	var kubeconfig, dbDNS, dbPass, dbUser, team, image, ingressDNSPrefix string
 	var dbPort int
 	var command = &cobra.Command{
 		Use:   "provision",
@@ -53,7 +53,7 @@ func cmdProvision() *cobra.Command {
 				databaseURL: dbGrafanaStr(dbDNS, dbPass, dbUser, team, dbPort),
 
 				ingressClass: "nginx",
-				ingressHost:  fmt.Sprintf("%s.example.com", team),
+				ingressHost:  fmt.Sprintf("%s.%s", team, ingressDNSPrefix),
 				ingressName:  name,
 
 				serviceName: name,
@@ -80,6 +80,7 @@ func cmdProvision() *cobra.Command {
 	command.Flags().StringVarP(&dbUser, "db.user", "u", "", "mysql database username")
 	command.Flags().StringVarP(&team, "team", "t", "foo", "team name")
 	command.Flags().StringVarP(&image, "image", "i", "grafana/grafana:5.1.0", "grafana official container image")
+	command.Flags().StringVarP(&ingressDNSPrefix, "ingress.prefix", "I", "grafana.example.com", "dna prefix template %s.prefix")
 
 	return command
 }
