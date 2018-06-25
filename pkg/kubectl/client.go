@@ -51,7 +51,6 @@ func (e *KubectlClient) Apply(manifest string) error {
 	}()
 
 	tmpFile.WriteString(manifest)
-	fmt.Println(manifest) // todo: remove me
 
 	options := &cmd.ApplyOptions{
 		FilenameOptions: resource.FilenameOptions{
