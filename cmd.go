@@ -24,6 +24,7 @@ func cmdVersion() *cobra.Command {
 func cmdProvision() *cobra.Command {
 	var kubeconfig, dbDNS, dbPass, dbUser, team, image, ingressDNSPrefix string
 	var dbPort int
+	var dryRun bool
 	var command = &cobra.Command{
 		Use:   "provision",
 		Short: "provision grafana and db",
@@ -45,31 +46,55 @@ func cmdProvision() *cobra.Command {
 			defer db.conn.Close()
 			errCheck(err)
 
-			err = db.createDB(team)
-			errCheck(err)
-
-			name := fmt.Sprintf("grafana-%s", team)
-			values := manifestValues{
-				databaseURL: dbGrafanaStr(dbDNS, dbPass, dbUser, team, dbPort),
-
-				ingressClass: "nginx",
-				ingressHost:  fmt.Sprintf("%s.%s", team, ingressDNSPrefix),
-				ingressName:  name,
-
-				serviceName: name,
-				namespace:   team,
-				image:       image,
-
-				deploymentName:       name,
-				deploymentLabelKey:   "app",
-				deploymentLabelValue: name,
+			config := &Config{}
+			if team != "" {
+				fmt.Println("adding teams from flags")
+				config.Teams = append(config.Teams, team)
+			} else {
+				config = GetConfig("config.yaml")
+				fmt.Println("adding teams from config")
 			}
 
-			manifest := manifestRender(values)
+			manifests := ""
+			for _, teamname := range config.Teams {
+				name := fmt.Sprintf("grafana-%s", teamname)
+				values := manifestValues{
+					databaseURL: dbGrafanaStr(dbDNS, dbPass, dbUser, teamname, dbPort),
 
-			kubectl := kubectl.NewKubectlClient(kubeconfig)
-			err = kubectl.Apply(manifest)
-			errCheck(err)
+					ingressClass: "nginx",
+					ingressHost:  fmt.Sprintf("%s.%s", teamname, ingressDNSPrefix),
+					ingressName:  name,
+
+					serviceName: name,
+					namespace:   teamname,
+					image:       image,
+
+					deploymentName:       name,
+					deploymentLabelKey:   "app",
+					deploymentLabelValue: name,
+				}
+
+				manifest := manifestRender(values)
+				manifests = manifestsAppend(manifests, manifest)
+
+				if dryRun {
+					fmt.Printf("--- %s ---\n", name)
+				} else {
+					err = db.createDB(teamname)
+					errCheck(err)
+
+				}
+			}
+
+			if dryRun {
+				fmt.Println(manifests)
+			} else {
+				kubectl := kubectl.NewKubectlClient(kubeconfig)
+				err = kubectl.Apply(manifests)
+				errCheck(err)
+
+			}
+
 		},
 	}
 
@@ -78,9 +103,11 @@ func cmdProvision() *cobra.Command {
 	command.Flags().IntVarP(&dbPort, "db.port", "P", 3306, "mysql database port")
 	command.Flags().StringVarP(&dbPass, "db.pass", "p", "", "mysql database password")
 	command.Flags().StringVarP(&dbUser, "db.user", "u", "", "mysql database username")
-	command.Flags().StringVarP(&team, "team", "t", "foo", "team name")
+	command.Flags().StringVarP(&team, "team", "t", "", "team name")
 	command.Flags().StringVarP(&image, "image", "i", "grafana/grafana:5.1.0", "grafana official container image")
 	command.Flags().StringVarP(&ingressDNSPrefix, "ingress.prefix", "I", "grafana.example.com", "dna prefix template %s.prefix")
+
+	command.Flags().BoolVarP(&dryRun, "dry-run", "D", false, "only output data")
 
 	return command
 }
