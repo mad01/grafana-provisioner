@@ -9,7 +9,7 @@ func manifestsAppend(old, new string) string {
 	return fmt.Sprintf("%s\n%s", old, new)
 }
 
-func manifestRender(m manifestValues) string {
+func manifestRender(m Manifest) string {
 	var replacer = strings.NewReplacer(
 		"{namespace}", m.namespace,
 		"{serviceName}", m.serviceName,
@@ -26,7 +26,7 @@ func manifestRender(m manifestValues) string {
 	return str
 }
 
-type manifestValues struct {
+type Manifest struct {
 	namespace   string
 	serviceName string
 

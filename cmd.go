@@ -58,7 +58,7 @@ func cmdProvision() *cobra.Command {
 			manifests := ""
 			for _, teamname := range config.Teams {
 				name := fmt.Sprintf("grafana-%s", teamname)
-				values := manifestValues{
+				values := Manifest{
 					databaseURL: dbGrafanaStr(dbDNS, dbPass, dbUser, teamname, dbPort),
 
 					ingressClass: "nginx",
