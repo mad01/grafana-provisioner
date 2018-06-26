@@ -51,3 +51,12 @@ teams:
   - bar
   - baz
 ```
+
+
+### missing features/todo
+* ingress tls option
+* render manifests from actual k8s objects not a string template
+* individual k8s objects for every api type
+* render testing
+* more docs/examples
+
