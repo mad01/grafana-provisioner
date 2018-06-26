@@ -7,13 +7,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var grafanasData = `
-teams:
-  - foo
-  - bar
-  - baz
-`
-
 type Config struct {
 	Teams []string `yaml:teams`
 }
