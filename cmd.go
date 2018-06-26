@@ -74,7 +74,8 @@ func cmdProvision() *cobra.Command {
 					deploymentLabelValue: name,
 				}
 
-				manifest := manifestRender(values)
+				// manifest := manifestRender(values)
+				manifest := values.Render()
 				manifests = manifestsAppend(manifests, manifest)
 
 				if dryRun {

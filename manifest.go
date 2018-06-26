@@ -68,6 +68,8 @@ func (m *Manifest) Render() string {
 func (m *Manifest) RenderNamespace() string {
 	o := v1.Namespace{}
 	o.Name = m.namespace
+	o.Kind = "Namespace"
+	o.APIVersion = "v1"
 
 	y, err := yaml.Marshal(o)
 	if err != nil {
@@ -82,8 +84,11 @@ func (m *Manifest) RenderServiceAccount() string {
 	o := v1.ServiceAccount{}
 	o.Name = m.namespace
 	o.Namespace = m.namespace
+	o.Kind = "ServiceAccount"
+	o.APIVersion = "v1"
 
 	y, err := yaml.Marshal(o)
+	yaml.Marshal()
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 		return ""
@@ -116,6 +121,8 @@ func (m *Manifest) RenderIngress() string {
 			},
 		},
 	}
+	o.APIVersion = "extensions/v1beta1"
+	o.Kind = "Ingress"
 
 	y, err := yaml.Marshal(o)
 	if err != nil {
@@ -133,6 +140,8 @@ func (m *Manifest) RenderService() string {
 		o.Spec.Ports,
 		v1.ServicePort{Name: "http", Port: 80, TargetPort: intstr.FromString("http")},
 	)
+	o.Kind = "Service"
+	o.APIVersion = "v1"
 
 	y, err := yaml.Marshal(o)
 	if err != nil {
@@ -204,6 +213,8 @@ func (m *Manifest) RenderDeployment() string {
 			},
 		},
 	}
+	o.APIVersion = "apps/v1beta2"
+	o.Kind = "Deployment"
 
 	y, err := yaml.Marshal(o)
 	if err != nil {
