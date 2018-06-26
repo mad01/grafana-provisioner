@@ -88,7 +88,6 @@ func (m *Manifest) RenderServiceAccount() string {
 	o.APIVersion = "v1"
 
 	y, err := yaml.Marshal(o)
-	yaml.Marshal()
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 		return ""
